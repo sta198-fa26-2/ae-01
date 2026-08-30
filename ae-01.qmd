@@ -1,0 +1,66 @@
+---
+title: AE-01
+subtitle: AI Chest X-Ray Readings
+description: "Classwork"
+categories: AE
+draft: false
+---
+
+
+
+```{r} 
+#| label: datamanip
+#| warning: false
+load("cxr_data.RData")
+library(janitor)
+library(tidyverse)
+
+# we'll get into data wrangling soon!
+# this code makes a binary version of ai_prob with 0.5 and over classified as abnormal
+cxr <- cxr_cases %>%
+  mutate(
+    ai_abnormal = case_when(
+      is.na(ai_prob) ~ NA,
+      ai_prob >= 0.5 ~ 1,
+      TRUE           ~ 0
+    )
+  )
+
+cxr %>% #making some pretty labels for plotting
+  mutate(
+    truth = factor(truth,
+                   levels = c(0, 1),
+                   labels = c("Normal", "Abnormal")),
+    ai_abnormal = factor(ai_abnormal,
+                         levels = c(0, 1),
+                         labels = c("AI predicts normal",
+                                    "AI predicts abnormal"))
+  ) %>%
+  tabyl(ai_abnormal, truth) %>%
+  adorn_totals(c("row", "col"))
+
+cxr2 <- cxr_cases %>%
+  mutate(
+    ai_abnormal2 = case_when(
+      is.na(ai_prob) ~ NA,
+      ai_prob >= 0.01 ~ 1, #this is probably not a good cutpoint!
+      TRUE           ~ 0
+    )
+  )
+cxr2 %>% #making some pretty labels for plotting
+  mutate(
+    truth = factor(truth,
+                   levels = c(0, 1),
+                   labels = c("Normal", "Abnormal")),
+    ai_abnormal2 = factor(ai_abnormal2,
+                         levels = c(0, 1),
+                         labels = c("AI predicts normal",
+                                    "AI predicts abnormal"))
+  ) %>%
+  tabyl(ai_abnormal2, truth) %>%
+  adorn_totals(c("row", "col"))
+
+
+```
+
+
