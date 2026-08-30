@@ -26,7 +26,7 @@ cxr <- cxr_cases %>%
     )
   )
 
-cxr %>% #making some pretty labels for plotting
+cxr %>% #making some pretty labels for plotting table
   mutate(
     truth = factor(truth,
                    levels = c(0, 1),
